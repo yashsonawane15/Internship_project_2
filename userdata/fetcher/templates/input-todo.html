@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>	
+	<head>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+		<style>
+			#header {
+					height: 100px;
+					background-color: #315A7A;
+				}
+
+			td {
+				padding: 10px;
+				font-size: 200%;
+			}
+		</style>
+
+		<div id="header"></div>
+		
+		<script>
+			function getCookie(name) {
+	    		let cookieValue = null;
+	    		if (document.cookie && document.cookie !== '') {
+	        		const cookies = document.cookie.split(';');
+	        		for (let i = 0; i < cookies.length; i++) {
+	            		const cookie = cookies[i].trim();
+	            		if (cookie.substring(0, name.length + 1) === (name + '=')) {
+	                		cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+	                		break;
+	            		}
+	        		}
+	    		}
+	    		return cookieValue;
+			}
+			const csrftoken = getCookie('csrftoken');
+
+			var user_dl = document.createElement('datalist');
+			(document.querySelector('head')).appendChild(user_dl);
+
+			var status_dl = document.createElement('datalist');
+			(document.querySelector('head')).appendChild(status_dl);
+			
+			var category_dl = document.createElement('datalist');
+			(document.querySelector('head')).appendChild(category_dl);
+			
+
+			user_dl.setAttribute('id', 'user-options');
+			status_dl.setAttribute('id', 'status-options');
+			category_dl.setAttribute('id', 'category-options');
+
+			$(document).ready( function() {
+				$.ajax( {
+							url: '/index/lists',
+							headers : {
+										'HTTP_X_CSRFTOKEN' : csrftoken,
+									 }, 
+							success: function(data, status) {
+										var ulist = data.user_list;
+										var dl = document.getElementById('user-options');
+										ulist.forEach( function(item) {
+											dl.innerHTML += "<option>" + item + "</option";
+										} );
+
+										var clist = data.category_list;
+										var dl = document.getElementById('category-options');
+										clist.forEach( function(item) {
+											dl.innerHTML += "<option>" + item + "</option";
+										} );
+
+										var slist = data.status_list;
+										var dl = document.getElementById('status-options');
+										slist.forEach( function(item) {
+											dl.innerHTML += "<option>" + item + "</option";
+										} );
+									},
+				}	);
+			});
+		</script>
+	</head>
+	<body>
+		<form method="post" autocomplete="off">
+			{% csrf_token %}
+			<table>
+				{{ form }}
+			</table>
+			<input type="submit">
+		</form>
+	</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+	<style>
+		#header {
+			height: 100px;
+			background-color: #315A7A;
+		}
+
+		button {
+			transition-duration: 0.2s;
+			font-size: 200%;
+			width: 200px;
+			background-color: #4CAF50;
+			border-radius: 10px;
+		}
+
+		button:hover {
+			background-color: white;
+		}
+
+		td {
+			padding-left: 50px;
+			padding-top: 30px;
+		}
+	</style>
+
+	<div id="header"></div>
+</head>
+<body>
+	<table>
+		<tr>
+			<td><button onclick="location.replace('/index/display/user')">User</button></td>
+		</tr>
+		<tr>
+			<td><button onclick="location.replace('/index/display/status')">Status</button></td>
+		</tr>
+		<tr>
+			<td><button onclick="location.replace('/index/display/category')">Category</button></td>
+		</tr>
+		<tr>
+			<td><button onclick="location.replace('/index/display/todo')">to-do</button></td>
+		</tr>
+	</table>
+</body>
+</html>

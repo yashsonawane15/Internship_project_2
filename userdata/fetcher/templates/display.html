@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+		<script>
+			function getCookie(name) {
+	    		let cookieValue = null;
+	    		if (document.cookie && document.cookie !== '') {
+	        		const cookies = document.cookie.split(';');
+	        		for (let i = 0; i < cookies.length; i++) {
+	            		const cookie = cookies[i].trim();
+	            		if (cookie.substring(0, name.length + 1) === (name + '=')) {
+	                		cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+	                		break;
+	            		}
+	        		}
+	    		}
+	    		return cookieValue;
+			}
+			const csrftoken = getCookie('csrftoken');
+
+			function remove(doc, docRow) {
+				$.ajax({
+					url : '/index/delete',
+					headers : {
+										'HTTP_X_CSRFTOKEN' : csrftoken,
+									 },
+					'data' : {'id' : doc.id, 'collection' : "{{ to_display }}" },
+					success : function(data, status) {
+								docRow.remove();
+							},
+					error : function(xhr, status, error) {
+								window.location.replace('/index/error')
+							}
+				});
+			}
+
+			function modify(docid, docRow) {
+				var datarows = docRow.children;
+				var modified = {'id' : docid, 'collection' : "{{ to_display }}"};
+				for(var i = 2; i < datarows.length; ++i) {
+					if( datarows[i].id != 'createdOn' && datarows[i].id != 'isActive' && datarows[i].id != 'target_date') {
+						modified[datarows[i].id] = datarows[i].innerHTML.trim();
+					} else {
+						modified[datarows[i].id] = datarows[i].innerHTML;
+					}
+				}
+
+				$.ajax({
+					url : '/index/modify',
+					headers : {
+								'HTTP_X_CSRFTOKEN' : csrftoken,
+							},
+					'data' :  modified,// {'id' : docid, 'collection' : "{{ to_display }}", 'modified' : modified} ,
+					dataType : 'json',
+					success : function(data, status) {
+							    console.log('Success');
+								alert('Document updated');
+							},
+					error:  function(xhr, status, error) {
+								window.location.replace('/index/error');
+							}
+				});
+			}
+		</script>
+
+		<style>
+			#ID {
+				display: none;
+			}
+
+			#header {
+				height: 100px;
+				background-color: #315A7A;
+			}
+
+			#home {
+				width: 200px;
+			}
+
+			button {
+				transition-duration: 0.2s;
+				font-size: 150%;
+				background-color: #4CAF50;
+				border-radius: 10px;
+				position: relative;
+				top: 10px;
+				left : 10px;
+			}
+
+			button:hover {
+				background-color: white;
+			}
+		</style>
+
+		<div id="header">
+			<button id = "home" onclick="location.replace('/index')">
+				Back to main page
+			</button>
+		</div>
+	</head>
+	<body>
+		<table class="table table-striped">
+			<tr>
+				<th></th>
+				<th></th>
+				{% for field in fields %}
+					<th id="{{field}}"> {{ field }} </th>
+				{% endfor %}
+			</tr>
+
+		 	{% for document in collection %}
+		 		<tr>
+		 			{% block rows %}
+		 				{% if to_display == 'user'  %}
+		 					<td id="ID"> {{ document.id }} </td>
+		 					<td><button id="{{document.id}}" class="btn" onclick="modify(this.id, (this.parentElement).parentElement)" > Modify </button></td>
+		 					<td><button id="{{document.id}}" class="btn" onclick="remove(this, (this.parentElement).parentElement)"> Delete </button></td>
+							<td class="data" id="username" contenteditable="true"> {{ document.username }} </td>
+							<td class="data" id="fname" contenteditable="true"> {{ document.fname  }}</td>
+							<td class="data" id="lname" contenteditable="true"> {{ document.lname  }}</td>
+							<td class="data" id="isActive" contenteditable="true"> {{ document.isActive }} </td>
+							<td class="data" id="createdOn" > {{ document.createdOn }} </td>
+
+						{% elif to_display == 'status' %}
+							<td><button id="{{document.id}}" onclick="modify(this.id, (this.parentElement).parentElement)" > Modify </button></td>
+		 					<td><button id="{{document.id}}" onclick="remove(this, (this.parentElement).parentElement)"> Delete </button></td>
+							<td class="data" id="name" contenteditable="true"> {{ document.name }} </td>
+							<td class="data" id="isActive" contenteditable="true"> {{ document.isActive }} </td>
+							<td class="data" id="createdOn" > {{ document.createdOn }} </td>
+
+						{% elif to_display == 'category' %}
+							<td><button id="{{document.id}}" onclick="modify(this.id, (this.parentElement).parentElement)" > Modify </button></td>
+		 					<td><button id="{{document.id}}" onclick="remove(this, (this.parentElement).parentElement)"> Delete </button></td>
+							<td class="data" id="catname" contenteditable="true"> {{ document.catname }} </td>
+							<td class="data" id="isActive" contenteditable="true"> {{ document.isActive }} </td>
+							<td class="data" id="createdOn" > {{ document.createdOn }} </td>
+
+						{% elif to_display == 'todo' %}
+							<td><button id="{{document.id}}" onclick="modify(this.id, (this.parentElement).parentElement)" > Modify </button></td>
+		 					<td><button id="{{document.id}}" onclick="remove(this, (this.parentElement).parentElement)"> Delete </button></td>
+							<td class="data" id="description" contenteditable="true"> {{ document.description }} </td>
+							<td class="data" id="details" contenteditable="true"> {{ document.details }} </td>
+							<td class="data" id="createdOn" > {{ document.createdOn }} </td>
+							<td class="data" id="target_date" contenteditable="true"> {{ document.target_date }} </td>
+							<td class="data" id="status" contenteditable="true"> {{ document.status.name }} </td>
+							<td class="data" id="category" contenteditable="true"> {{ document.category.catname }} </td>
+							<td class="data" id="assigned_to" contenteditable="true"> {{ document.assigned_to.username }} </td>
+
+						{% endif %}
+		 			{% endblock rows %}
+		 		</tr>
+		 	{% endfor %}
+		</table>
+		<button class="btn" onclick='location.replace("/index/input/{{to_display}}");'>Add new document</button>
+	</body>
+</html>

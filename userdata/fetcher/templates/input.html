@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>	
+	<head>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+		<style>
+			#header {
+					height: 100px;
+					background-color: #315A7A;
+				}
+
+			td {
+				padding: 10px;
+				font-size: 200%;
+			}
+		</style>
+
+		<div id="header"></div>
+	</head>
+	<body>
+		<form method="post" autocomplete="off">
+			{% csrf_token %}
+			<table>
+				{{ form.as_table }}
+			</table>
+			<input type="submit">
+		</form>
+	</body>
+</html>
